@@ -1,5 +1,5 @@
 import { CELL_VALUE, GAME_STATUS, TURN } from "./constants.js";
-import { getCellElementAtIdx, getCellElementList, getCurrentTurnElement, getGameStatusElement, getReplayButtonElement } from "./selectors.js";
+import { getCellElementAtIdx, getCellElementList, getCellListElement, getCurrentTurnElement, getGameStatusElement, getReplayButtonElement } from "./selectors.js";
 import { checkGameStatus } from "./utils.js";
 
 console.log(checkGameStatus(['X', 'O', 'O', '', 'X', '', '', 'O', 'X']))
@@ -86,10 +86,21 @@ function handleCellClick(cell,index){
 }
 
 function initCellElementList(){
-    const cellElementList= getCellElementList();
-    cellElementList.forEach((cell,index)=>{
-        cell.addEventListener('click',()=>handleCellClick(cell,index))
+    //set index for each li element
+    const liList= getCellElementList();
+    liList.forEach((cell,index)=>{
+        cell.dataset.idx=index;
     })
+    const ulElement= getCellListElement();
+    if(ulElement){
+        console.log(ulElement);
+        ulElement.addEventListener("click",(event)=>{
+            if(event.target.tagName !== "LI") return;
+            
+            const index = Number.parseInt(event.target.dataset.idx);
+            handleCellClick(event.target,index);
+        })
+    }
 }
 function resetGame(){
     //reset temp global vars
